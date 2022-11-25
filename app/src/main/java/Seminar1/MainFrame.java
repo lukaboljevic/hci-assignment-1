@@ -9,6 +9,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -36,6 +39,37 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class MainFrame extends javax.swing.JFrame {
 
+    private class ItemListenerFlightType implements ItemListener {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED){
+                String type = Utils.getSelectedRadioButtonName(groupFlightType);
+                boolean returnDateVisible = type.equals("Return");
+                
+                labelReturnDate.setEnabled(returnDateVisible);
+                cboxReturnDay.setEnabled(returnDateVisible);
+                cboxReturnMonth.setEnabled(returnDateVisible);
+                cboxReturnYear.setEnabled(returnDateVisible);
+            }
+        }
+    }
+    
+    private class MousePressedSeatButton extends MouseAdapter {
+        
+        // has to be mousePressed, mouseClicked doesn't give us what we want.
+        @Override
+        public void mousePressed(MouseEvent me){
+            // The JToggleButton has an invisible -1-1 written inside of it, which
+            // is there so the size of the buttons remains the same at all times.
+            // Setting the foreground to this color makes sure it is not seen
+            // for that split second when the button is pressed. Also works when
+            // "unselecting" this button, since we are also setting the foreground
+            // color in ActionPerformedSeatButton class.
+            ((JToggleButton)me.getComponent()).setForeground(App.BUTTON_CLICKED_ON_COLOR);
+        }
+    }
+    
+    
     private double totalBookingPrice;
     private int numAdultsSelected = -1; // stores the previously selected amount of adult passengers; -1 when no search has yet been made
     private int numChildrenSelected = -1; // same as above, just for amount of child passengers
@@ -56,10 +90,13 @@ public class MainFrame extends javax.swing.JFrame {
                 + " flight from <b>" + this.cboxFrom.getSelectedItem()
                 + "</b> to <b>" + this.cboxTo.getSelectedItem() + "</b><br><br>"
                 + "Outbound date: <b>" + this.cboxOutboundMonth.getSelectedItem() + " "
-                + this.cboxOutboundDay.getSelectedItem() + ", " + this.cboxOutboundYear.getSelectedItem() + "</b><br>"
-                + "Return date: <b>" + this.cboxReturnMonth.getSelectedItem() + " "
-                + this.cboxReturnDay.getSelectedItem() + ", " + this.cboxReturnYear.getSelectedItem() + "</b><br>"
-                + "Flight time: <b>" + Utils.getSelectedRadioButtonName(this.groupFlightTime) + "</b><br>"
+                + this.cboxOutboundDay.getSelectedItem() + ", " + this.cboxOutboundYear.getSelectedItem() + "</b><br>";
+        
+        if (Utils.getSelectedRadioButtonName(this.groupFlightType).equals("Return")){
+            bookingMessage += "Return date: <b>" + this.cboxReturnMonth.getSelectedItem() + " "
+                + this.cboxReturnDay.getSelectedItem() + ", " + this.cboxReturnYear.getSelectedItem() + "</b><br>";
+        }
+        bookingMessage += "Flight time: <b>" + Utils.getSelectedRadioButtonName(this.groupFlightTime) + "</b><br>"
                 + "Flight class: <b>" + Utils.getSelectedRadioButtonName(this.groupFlightClass) + "</b><br>"
                 + "Number of passengers: <b>" + (this.numAdultsSelected + this.numChildrenSelected) + "</b><br><br>";
 
@@ -89,7 +126,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         // We'll be using a scroll pane because we don't want the option pane to have too big a height
         JScrollPane pane = new JScrollPane(ep);
-        pane.setPreferredSize(new Dimension(400, 400));
+        pane.setPreferredSize(new Dimension(400, 430));
         
         int proceed = Utils.showConfirmationMessage(this, pane, "Confirm booking", false);
         return !(proceed == JOptionPane.CANCEL_OPTION || proceed == JOptionPane.NO_OPTION
@@ -175,23 +212,23 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     
-    private void fillComboBoxForPayerInfoAutoFill(){
+    private void fillCopyFromComboBox(){
         /**
          * Fill up the combo box which is used to fill up payer information 
          * from an existing passenger. The combo box is found on the payment panel.
          */
-        int previousSelected = this.cboxFillFromPsg.getSelectedIndex(); // 0 or an actual passenger
-        this.cboxFillFromPsg.removeAllItems();
-        this.cboxFillFromPsg.insertItemAt("", 0);
+        int previousSelected = this.cboxCopyFrom.getSelectedIndex(); // 0 or an actual passenger
+        this.cboxCopyFrom.removeAllItems();
+        this.cboxCopyFrom.insertItemAt("", 0);
 
         // Insert passenger full names into the list
         for (PassengerInfo pd: this.passengerList){
             String psgName = pd.getPsgName();
             String psgSurname = pd.getSurname();
             String fullName = psgName + " " + psgSurname;
-            this.cboxFillFromPsg.insertItemAt(fullName, pd.getPassengerNumber());
+            this.cboxCopyFrom.insertItemAt(fullName, pd.getPassengerNumber());
         }
-        this.cboxFillFromPsg.setSelectedIndex(previousSelected); // invokes the ItemListener
+        this.cboxCopyFrom.setSelectedIndex(previousSelected); // invokes the ItemListener
     }
     
     
@@ -247,7 +284,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         
         // If it's a return flight, price is doubled
-        if (Utils.getSelectedRadioButtonName(this.groupFlightType).equals("return")){
+        if (Utils.getSelectedRadioButtonName(this.groupFlightType).equals("Return")){
             startAdult *= 2;
             startChild *= 2;
         }
@@ -397,6 +434,7 @@ public class MainFrame extends javax.swing.JFrame {
             Utils.showErrorMessage(this, "Please select if this flight is one way or return, and try again.");
             return false;
         }
+        boolean returnFlight = Utils.getSelectedRadioButtonName(this.groupFlightType).equals("Return");
         
         
         // Check that both cities are selected, and that they're different
@@ -414,7 +452,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         if (selectedFromIndex == selectedToIndex){
             Utils.showErrorMessage(this, "Origin city cannot be the same as the destination city. "
-                    + "Please change one, and try again.");
+                    + "Please change one or both cities, and try again.");
             return false;
         }
         
@@ -453,34 +491,42 @@ public class MainFrame extends javax.swing.JFrame {
         }
         
         if (outboundDate.isBefore(today)){
-            Utils.showErrorMessage(this, "Chosen outbound date is set before today's date. Please select a valid"
+            Utils.showErrorMessage(this, "Chosen outbound date (" + outboundDate + ") is "
+                    + "set before today's date (" + today + "). Please select a valid"
                     + " outbound date and try again.");
             return false;
         }
-        // it's enough to check if it's <= the outbound date,
-        // we don't have to check if it's before today too
-        if (returnDate.isEqual(outboundDate)){
-            Utils.showErrorMessage(this, "Chosen return date is set on the same day as the outbound date. "
-                    + "Please select a later return date and try again.");
-            return false;
-        }
-        if (returnDate.isBefore(outboundDate)){
-            Utils.showErrorMessage(this, "Chosen return date is set before the outbound date. Please select a valid"
-                    + " return date and try again.");
-            return false;
+        
+        // It's enough to check if return date <= outbound date,
+        // we don't have to check if it's before today too.
+        // Of course this only applies if the flight is infact
+        // a return flight
+        if (returnFlight){
+            if (returnDate.isEqual(outboundDate)){
+                Utils.showErrorMessage(this, "Chosen return date (" + returnDate + ") is "
+                        + "set on the same day as the outbound date. "
+                        + "Please select a later return date and try again.");
+                return false;
+            }
+            if (returnDate.isBefore(outboundDate)){
+                Utils.showErrorMessage(this, "Chosen return date (" + returnDate + ") is "
+                        + "set before the outbound date (" + outboundDate + "). Please select a valid"
+                        + " return date and try again.");
+                return false;
+            }
         }
         
         
         // Verify that time of flight and class are selected
         if (!Utils.buttonFromGroupSelected(this.groupFlightTime)){
             Utils.showErrorMessage(this, "Flight time was not selected. "
-                    + "Please select your flight time, and try again.");
+                    + "Please select your flight time (morning, afternoon, evening), and try again.");
             return false;
         }
         
         if (!Utils.buttonFromGroupSelected(this.groupFlightClass)){
             Utils.showErrorMessage(this, "Flight class was not selected. "
-                    + "Please select your flight class, and try again.");
+                    + "Please select your flight class (economy, business), and try again.");
             return false;
         }
         
@@ -580,7 +626,8 @@ public class MainFrame extends javax.swing.JFrame {
             if (!passportOk){
                 Utils.showErrorMessage(this, "Passport number for passenger " + psgNumber + " "
                         + "is not in a valid format. The required format is \"P\" followed by 8 digits. "
-                        + "Please enter a valid passport number for passenger " + psgNumber + " and try again.");
+                        + "You entered: " + psgPassport + ". Please enter a valid passport number for "
+                        + "passenger " + psgNumber + " and try again.");
                 return false;
             }
             
@@ -673,7 +720,7 @@ public class MainFrame extends javax.swing.JFrame {
         if (!emailOk){
             Utils.showErrorMessage(this, "Entered email is not in a valid format. Examples of valid emails "
                     + "are user@domain.com, user@domain.co.in, user.name@domain.com, user_name@domain.corporate.in. "
-                    + "Please enter a valid email and try again.");
+                    + "You entered: " + payerEmail + ". Please enter a valid email and try again.");
             return false;
         }
         
@@ -727,7 +774,8 @@ public class MainFrame extends javax.swing.JFrame {
         if (!numberOk){
             Utils.showErrorMessage(this, "Card number is not in a valid format. "
                     + "It should contain 16 digits, with optional whitespace or - in between "
-                    + "each group of 4. Please correct the entered card number and try again.");
+                    + "each group of 4. You entered: " + cardNumber + ". Please correct the "
+                    + "entered card number and try again.");
             return false;
         }
         
@@ -752,11 +800,13 @@ public class MainFrame extends javax.swing.JFrame {
         
         int expMonth = Integer.parseInt((String)this.cboxExpirationMonth.getSelectedItem());
         int expYear = Integer.parseInt((String)this.cboxExpirationYear.getSelectedItem());
-        int expDay = Month.of(expMonth).length(Year.of(expYear).isLeap());
+        int expDay = Month.of(expMonth).length(Year.of(expYear).isLeap()); // get max day for this month and year
         LocalDate expDate = LocalDate.of(expYear, expMonth, expDay);
         if (expDate.isBefore(today)){
-            Utils.showErrorMessage(this, "Card expiration date is set before today's date. "
-                    + "Please choose a valid expiration date and try again.");
+            Utils.showErrorMessage(this, "Card expiration date ("
+                    + this.cboxExpirationMonth.getSelectedItem() + " " + expYear + ") is "
+                    + "set before today's date. Please choose a valid expiration date "
+                    + "and try again.");
             return false;
         }
         
@@ -778,7 +828,8 @@ public class MainFrame extends javax.swing.JFrame {
         this.cboxFrom.setSelectedIndex(0);
         this.cboxTo.setSelectedIndex(0);
         
-        // Set dates to today for outbound, and tomorrow for return
+        
+        // Set dates to today for outbound, and tomorrow for (potential) return
         LocalDate today = LocalDate.now();
         
         this.cboxOutboundDay.setSelectedIndex(today.getDayOfMonth() - 1);
@@ -789,20 +840,32 @@ public class MainFrame extends javax.swing.JFrame {
         this.cboxReturnMonth.setSelectedIndex(today.getMonthValue() - 1);
         this.cboxReturnYear.setSelectedIndex(today.getYear() - 2022);
         
+        
+        // Selection of return dates not possible when the app is started
+        this.labelReturnDate.setEnabled(false);
+        this.cboxReturnDay.setEnabled(false);
+        this.cboxReturnMonth.setEnabled(false);
+        this.cboxReturnYear.setEnabled(false);
+        
+        
         // Set passenger count to 1 for adults, and 0 for children
         this.spinnerAdults.setValue(1);
         this.spinnerChildren.setValue(0);
+        
         
         // Unselect all radio buttons
         this.groupFlightType.clearSelection();
         this.groupFlightClass.clearSelection();
         this.groupFlightTime.clearSelection();
         
+        
         // Set title
         this.changePanelTitle(0);
         
+        
         // The back button is not enabled on the first panel
         this.buttonBack.setEnabled(false);
+        
         
         // The "forward" button should say "Search"
         this.buttonForward.setText("Search");
@@ -863,7 +926,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
             JToggleButton t = (JToggleButton) c;
             t.setForeground(Color.WHITE);
-            t.setText("AA");
+            t.setText("-1-1"); // some random placeholder (invisible) text, just to keep all buttons the same size at all times
             t.setSelected(false);
         }
     }
@@ -901,7 +964,7 @@ public class MainFrame extends javax.swing.JFrame {
          * Set start state of the payment panel.
          */
         
-        this.cboxFillFromPsg.setSelectedIndex(0);
+        this.cboxCopyFrom.setSelectedIndex(0);
         this.textPayerName.setText("");
         this.textPayerSurname.setText("");
         this.textPayerEmail.setText("");
@@ -932,10 +995,14 @@ public class MainFrame extends javax.swing.JFrame {
         // Insert empty selection into combo boxes
         this.cboxFrom.insertItemAt("", 0);
         this.cboxTo.insertItemAt("", 0);
-        this.cboxFillFromPsg.insertItemAt("", 0);
+        this.cboxCopyFrom.insertItemAt("", 0);
         
         // Set the main panel to its start state
         this.mainPanelStartState();
+        
+        // Add the item listener for flight type radio buttons
+        this.radioOneWayFlight.addItemListener(new ItemListenerFlightType());
+        this.radioReturnFlight.addItemListener(new ItemListenerFlightType());
         
         // Add an action listener for radio buttons corresponding to the seats
         for (Component c: this.seatPanelSeatTable.getComponents()){
@@ -944,6 +1011,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
             JToggleButton t = (JToggleButton) c;
             t.addActionListener(new ActionPerformedSeatButton());
+            t.addMouseListener(new MousePressedSeatButton());
             
             // Add some placeholder text, so that the buttons don't go bananas
             // with resizing themselves later, when we set their text to the 
@@ -1065,8 +1133,8 @@ public class MainFrame extends javax.swing.JFrame {
         textPayerAddress = new javax.swing.JTextField();
         textPayerCity = new javax.swing.JTextField();
         textPayerCountry = new javax.swing.JTextField();
-        labelFillFromPsg = new javax.swing.JLabel();
-        cboxFillFromPsg = new javax.swing.JComboBox<>();
+        labelCopyFrom = new javax.swing.JLabel();
+        cboxCopyFrom = new javax.swing.JComboBox<>();
         panelCardDetailsContainer = new javax.swing.JPanel();
         labelCardOwnerName = new javax.swing.JLabel();
         labelCardNumber = new javax.swing.JLabel();
@@ -1087,7 +1155,7 @@ public class MainFrame extends javax.swing.JFrame {
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(" Reserve a flight");
+        setTitle(" Book a flight");
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(120, 50));
         setName("frame"); // NOI18N
@@ -1216,10 +1284,6 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addGap(220, 220, 220))
                             .addComponent(labelTo, javax.swing.GroupLayout.Alignment.LEADING)))
                     .addGroup(mainPanelDestinationsLayout.createSequentialGroup()
-                        .addComponent(cboxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cboxTo, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(mainPanelDestinationsLayout.createSequentialGroup()
                         .addGroup(mainPanelDestinationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(mainPanelDestinationsLayout.createSequentialGroup()
                                 .addComponent(cboxOutboundDay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1233,7 +1297,11 @@ public class MainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cboxReturnMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboxReturnYear, 0, 86, Short.MAX_VALUE)))
+                        .addComponent(cboxReturnYear, 0, 86, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelDestinationsLayout.createSequentialGroup()
+                        .addComponent(cboxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cboxTo, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         mainPanelDestinationsLayout.setVerticalGroup(
@@ -1243,7 +1311,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(mainPanelDestinationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelFrom)
                     .addComponent(labelTo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(mainPanelDestinationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cboxFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboxTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1252,15 +1320,16 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(labelOutboundDate, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(labelReturnDate, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(mainPanelDestinationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cboxOutboundDay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboxOutboundYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboxOutboundMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(mainPanelDestinationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelDestinationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(cboxReturnDay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cboxReturnYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cboxReturnMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                        .addComponent(cboxReturnMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelDestinationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cboxOutboundDay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cboxOutboundYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cboxOutboundMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(17, 17, 17))
         );
 
         mainPanelTimeClass.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Time and class", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Sans", 0, 18))); // NOI18N
@@ -1312,22 +1381,20 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(mainPanelTimeClassLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelTimeClassLayout.createSequentialGroup()
                         .addComponent(radioFlightEvening)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(mainPanelTimeClassLayout.createSequentialGroup()
                         .addGroup(mainPanelTimeClassLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(radioFlightMorning)
                             .addComponent(radioFlightAfternoon)
                             .addComponent(labelFlightTime))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
                         .addGroup(mainPanelTimeClassLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelTimeClassLayout.createSequentialGroup()
                                 .addComponent(labelFlightClass)
-                                .addGap(66, 66, 66))
-                            .addGroup(mainPanelTimeClassLayout.createSequentialGroup()
-                                .addGroup(mainPanelTimeClassLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(radioFlightEconomy)
-                                    .addComponent(radioFlightBusiness))
-                                .addContainerGap())))))
+                                .addGap(8, 8, 8))
+                            .addComponent(radioFlightEconomy)
+                            .addComponent(radioFlightBusiness))))
+                .addContainerGap())
         );
         mainPanelTimeClassLayout.setVerticalGroup(
             mainPanelTimeClassLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1375,7 +1442,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(spinnerAdults, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelChildren)
                     .addComponent(spinnerChildren, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(205, Short.MAX_VALUE))
+                .addContainerGap(211, Short.MAX_VALUE))
         );
         mainPanelPassengersLayout.setVerticalGroup(
             mainPanelPassengersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1401,8 +1468,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(basePanelMainLayout.createSequentialGroup()
                         .addComponent(mainPanelTimeClass, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(mainPanelPassengers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .addComponent(mainPanelPassengers, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(mainPanelDestinations, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
                     .addComponent(mainPanelButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)))
         );
@@ -1416,7 +1482,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addGroup(basePanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(mainPanelPassengers, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
-                    .addComponent(mainPanelTimeClass, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mainPanelTimeClass, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -1582,6 +1648,7 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         seatPanelSeatTable.add(jToggleButton6, gridBagConstraints);
+        jToggleButton6.getAccessibleContext().setAccessibleDescription("");
 
         jToggleButton5.setFont(new java.awt.Font("Lucida Sans", 0, 14)); // NOI18N
         jToggleButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -2097,8 +2164,8 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, seatPanelContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(seatPanelSeatTable, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
-                .addComponent(seatPanelPsgs, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
+                .addComponent(seatPanelPsgs, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         seatPanelContainerLayout.setVerticalGroup(
@@ -2167,11 +2234,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         textPayerCountry.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
 
-        labelFillFromPsg.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
-        labelFillFromPsg.setText("Payer info from");
+        labelCopyFrom.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
+        labelCopyFrom.setText("Copy from");
 
-        cboxFillFromPsg.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
-        cboxFillFromPsg.addItemListener(new java.awt.event.ItemListener() {
+        cboxCopyFrom.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
+        cboxCopyFrom.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cboxFillFromItemStateChanged(evt);
             }
@@ -2185,9 +2252,9 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panelPayerDetailsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelPayerDetailsContainerLayout.createSequentialGroup()
-                        .addComponent(labelFillFromPsg)
+                        .addComponent(labelCopyFrom)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboxFillFromPsg, 0, 186, Short.MAX_VALUE))
+                        .addComponent(cboxCopyFrom, 0, 186, Short.MAX_VALUE))
                     .addComponent(labelPayerName)
                     .addComponent(labelPayerEmail)
                     .addComponent(labelPayerCity)
@@ -2209,8 +2276,8 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(panelPayerDetailsContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelPayerDetailsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelFillFromPsg)
-                    .addComponent(cboxFillFromPsg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labelCopyFrom)
+                    .addComponent(cboxCopyFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(panelPayerDetailsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelPayerName)
@@ -2588,8 +2655,8 @@ public class MainFrame extends javax.swing.JFrame {
                 
                 this.buttonForward.setText("Checkout");
                     
-                // Fill up the fillFromPsg combo box, found on the payment panel
-                this.fillComboBoxForPayerInfoAutoFill();
+                // Fill up the copyFrom combo box, found on the payment panel
+                this.fillCopyFromComboBox();
                 
                 // Calculate the total price of the booking/flight
                 this.calculateTotalBookingPrice();
@@ -2626,7 +2693,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
             
             // Booking complete
-            Utils.showOrderConfirmedInfoMessage(this, "Booking complete! Your itinerary, tickets "
+            Utils.showOrderConfirmedInfoMessage(this, "Booking complete! Your tickets "
                     + "and receipt have been sent to email: " + this.textPayerEmail.getText() + ". "
                     + "Thank you for flying with Polet!");
                     
@@ -2651,7 +2718,7 @@ public class MainFrame extends javax.swing.JFrame {
          * the combo box on the payment panel.
          */
         if (evt.getStateChange() == ItemEvent.SELECTED){
-            int selectedIndex = this.cboxFillFromPsg.getSelectedIndex();
+            int selectedIndex = this.cboxCopyFrom.getSelectedIndex();
             if (selectedIndex == 0){
                 // can be commented out if this is not the wanted behaviour
                 this.textPayerName.setText("");
@@ -2700,9 +2767,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton buttonClear;
     private javax.swing.JButton buttonForward;
     private javax.swing.JPanel buttonsPanel;
+    private javax.swing.JComboBox<String> cboxCopyFrom;
     private javax.swing.JComboBox<String> cboxExpirationMonth;
     private javax.swing.JComboBox<String> cboxExpirationYear;
-    private javax.swing.JComboBox<String> cboxFillFromPsg;
     private javax.swing.JComboBox<String> cboxFrom;
     private javax.swing.JComboBox<String> cboxOutboundDay;
     private javax.swing.JComboBox<String> cboxOutboundMonth;
@@ -2758,7 +2825,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel labelCardNumber;
     private javax.swing.JLabel labelCardOwnerName;
     private javax.swing.JLabel labelChildren;
-    private javax.swing.JLabel labelFillFromPsg;
+    private javax.swing.JLabel labelCopyFrom;
     private javax.swing.JLabel labelFlightClass;
     private javax.swing.JLabel labelFlightTime;
     private javax.swing.JLabel labelFrom;

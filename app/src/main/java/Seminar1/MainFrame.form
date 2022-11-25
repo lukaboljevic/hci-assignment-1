@@ -11,7 +11,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value=" Reserve a flight"/>
+    <Property name="title" type="java.lang.String" value=" Book a flight"/>
     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[1920, 1080]"/>
     </Property>
@@ -141,8 +141,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="mainPanelTimeClass" min="-2" pref="316" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="mainPanelPassengers" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="mainPanelPassengers" min="-2" pref="317" max="-2" attributes="0"/>
                           </Group>
                           <Component id="mainPanelDestinations" alignment="1" pref="658" max="32767" attributes="0"/>
                           <Component id="mainPanelButtons" pref="658" max="32767" attributes="0"/>
@@ -160,7 +159,7 @@
                       <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="mainPanelPassengers" pref="174" max="32767" attributes="0"/>
-                          <Component id="mainPanelTimeClass" min="-2" pref="174" max="-2" attributes="0"/>
+                          <Component id="mainPanelTimeClass" pref="174" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="12" max="32767" attributes="0"/>
                   </Group>
@@ -277,11 +276,6 @@
                                       <Component id="labelTo" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="cboxFrom" min="-2" pref="304" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="cboxTo" min="-2" pref="304" max="-2" attributes="0"/>
-                              </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
@@ -301,6 +295,11 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="cboxReturnYear" pref="86" max="32767" attributes="0"/>
                               </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="cboxFrom" min="-2" pref="304" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="cboxTo" min="-2" pref="304" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -314,7 +313,7 @@
                               <Component id="labelFrom" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="labelTo" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="cboxFrom" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                               <Component id="cboxTo" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -325,17 +324,19 @@
                               <Component id="labelReturnDate" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="cboxOutboundDay" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cboxOutboundYear" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cboxOutboundMonth" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" alignment="3" groupAlignment="3" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                                   <Component id="cboxReturnDay" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="cboxReturnYear" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="cboxReturnMonth" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="cboxOutboundDay" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cboxOutboundYear" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cboxOutboundMonth" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                          <EmptySpace pref="17" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -646,7 +647,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="radioFlightEvening" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -654,22 +655,18 @@
                                       <Component id="radioFlightAfternoon" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="labelFlightTime" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="56" max="32767" attributes="0"/>
+                                  <EmptySpace pref="108" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="1" attributes="0">
                                           <Component id="labelFlightClass" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="radioFlightEconomy" min="-2" max="-2" attributes="0"/>
-                                              <Component id="radioFlightBusiness" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                      </Group>
+                                      <Component id="radioFlightEconomy" min="-2" max="-2" attributes="0"/>
+                                      <Component id="radioFlightBusiness" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -817,7 +814,7 @@
                               <Component id="labelChildren" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="spinnerChildren" alignment="0" min="-2" pref="90" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="205" max="32767" attributes="0"/>
+                          <EmptySpace pref="211" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -943,8 +940,8 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="seatPanelSeatTable" min="-2" pref="290" max="-2" attributes="0"/>
-                          <EmptySpace pref="113" max="32767" attributes="0"/>
-                          <Component id="seatPanelPsgs" min="-2" pref="235" max="-2" attributes="0"/>
+                          <EmptySpace pref="128" max="32767" attributes="0"/>
+                          <Component id="seatPanelPsgs" min="-2" pref="220" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -1171,6 +1168,9 @@
                           <Dimension value="[30, 30]"/>
                         </Property>
                       </Properties>
+                      <AccessibilityProperties>
+                        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
+                      </AccessibilityProperties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                           <GridBagConstraints gridX="6" gridY="3" gridWidth="2" gridHeight="2" fill="1" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="10" weightX="0.1" weightY="0.1"/>
@@ -1916,9 +1916,9 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="labelFillFromPsg" min="-2" max="-2" attributes="0"/>
+                                  <Component id="labelCopyFrom" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="cboxFillFromPsg" pref="186" max="32767" attributes="0"/>
+                                  <Component id="cboxCopyFrom" pref="186" max="32767" attributes="0"/>
                               </Group>
                               <Component id="labelPayerName" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="labelPayerEmail" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -1945,8 +1945,8 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="labelFillFromPsg" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cboxFillFromPsg" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="labelCopyFrom" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cboxCopyFrom" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -2076,15 +2076,15 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="labelFillFromPsg">
+                <Component class="javax.swing.JLabel" name="labelCopyFrom">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Lucida Sans" size="15" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Payer info from"/>
+                    <Property name="text" type="java.lang.String" value="Copy from"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="cboxFillFromPsg">
+                <Component class="javax.swing.JComboBox" name="cboxCopyFrom">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Lucida Sans" size="15" style="0"/>

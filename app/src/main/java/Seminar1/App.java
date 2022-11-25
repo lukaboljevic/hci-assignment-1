@@ -3,6 +3,7 @@
  */
 package Seminar1;
 
+import java.awt.Color;
 import java.awt.Font;
 import javax.swing.UIManager;
 
@@ -12,6 +13,7 @@ public class App {
     }
     
     public static final Font FONT = new Font("Lucida Sans", Font.PLAIN, 15);
+    public static final Color BUTTON_CLICKED_ON_COLOR = new Color(230, 230, 230);
 
     public static void main(String[] args) {
         com.formdev.flatlaf.FlatLightLaf.setup(); // setup FlatLaf Light theme to be used by MainFrame

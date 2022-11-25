@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -17,6 +19,32 @@ import javax.swing.JToggleButton;
  */
 public class ActionPerformedSeatButton implements ActionListener {
     
+    
+    private static final Map<String, Boolean> seatTaken = new HashMap<>(); // track whether seats were taken
+    private static boolean initialized = false;
+    
+    public ActionPerformedSeatButton(){
+        if (!initialized){
+            initialize();
+            initialized = true;
+        }
+    }
+    
+    private void initialize(){
+        /**
+         * Initialize the hash map.
+         */
+        // these values don't have to be hard coded, but it's okay.
+        String[] rows = {"1", "2", "3", "4", "5", "6", "7", "8"};
+        String[] cols = {"A", "C", "D", "F"};
+        
+        for (String col: cols){
+            for (String row: rows){
+                seatTaken.put(col + row, false);
+            }
+        }
+    }
+    
     /**
      * An action performed action listener, for the JToggleButtons used for seat selection.
      * @param e: ActionEvent object
@@ -24,10 +52,11 @@ public class ActionPerformedSeatButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JToggleButton origin = (JToggleButton)e.getSource();
-        if (origin.getForeground() == Color.BLACK){
+        if (seatTaken.get(origin.getName())){
             // this means that this button was previously selected by 
-            // a passenger, so just return (and select the button again
-            // because it was unselected now).
+            // a passenger, i.e. this seat is taken, and it was clicked on again, 
+            // so just return (and select the button again because it was 
+            // unselected just now).
             origin.setSelected(true);
             return;
         }
@@ -52,12 +81,14 @@ public class ActionPerformedSeatButton implements ActionListener {
                 continue;
             }
             
-            if (ps.getSelecting()){
-                if (!(ps.getSeat().equals(""))){
+            if (ps.getSelecting()){ // if this passenger is selecting
+                if (!(ps.getButtonSeat() == null)){ // if this passenger has already selected a seat, unselect it
                     JToggleButton prevSeatButton = ps.getButtonSeat();
+                    
                     prevSeatButton.setForeground(Color.WHITE);
-                    prevSeatButton.setText("AA");
+                    prevSeatButton.setText("-1-1");
                     prevSeatButton.setSelected(false);
+                    seatTaken.put(prevSeatButton.getName(), false); // mark seat as free
                     
                     ps.setSeat("");
                 }
@@ -66,7 +97,7 @@ public class ActionPerformedSeatButton implements ActionListener {
                 String surnameInitial = ps.getSurname().substring(0, 1);
                 origin.setForeground(Color.BLACK);
                 origin.setText(nameInitial + surnameInitial);
-                // ofc, origin button is now selected
+                seatTaken.put(origin.getName(), true); // mark this seat as taken!
                 
                 ps.setButtonSeat(origin);
                 ps.setSeat(origin.getName());
@@ -79,7 +110,7 @@ public class ActionPerformedSeatButton implements ActionListener {
         // Getting here means that no passenger was selecting a seat, so just
         // unselect the button
         origin.setForeground(Color.WHITE);
-        origin.setText("AA");
+        origin.setText("-1-1");
         origin.setSelected(false);
     }
     

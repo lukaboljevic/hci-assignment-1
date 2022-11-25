@@ -36,7 +36,6 @@ public class PassengerInfo extends javax.swing.JPanel {
                 }
             }
         }
-        
     }
 
     private final int passengerNumber;
@@ -277,10 +276,10 @@ public class PassengerInfo extends javax.swing.JPanel {
         radioLuggageExtra.setText("Extra (+15kg)");
         radioLuggageExtra.setName("extra"); // NOI18N
 
-        labelPriceTitle.setFont(new java.awt.Font("Lucida Sans", 0, 16)); // NOI18N
+        labelPriceTitle.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         labelPriceTitle.setText("Price");
 
-        labelPrice.setFont(new java.awt.Font("Lucida Sans", 0, 16)); // NOI18N
+        labelPrice.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         labelPrice.setText("0.00€");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
