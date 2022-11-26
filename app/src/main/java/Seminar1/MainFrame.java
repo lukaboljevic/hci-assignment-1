@@ -1165,7 +1165,6 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(" Book a flight");
         setBackground(new java.awt.Color(250, 250, 250));
-        setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(120, 50));
         setName("frame"); // NOI18N
         setResizable(false);
@@ -2220,7 +2219,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         labelPayerEmail.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         labelPayerEmail.setText("Email");
-        labelPayerEmail.setToolTipText("<html>The email address where your booking and receipt will be sent. Examples of valid emails:\n<ul>\n<li>user@domain.com</li>\n<li>user@domain.co.in</li>\n<li>user.name@domain.com</li>\n<li>user_name@domain.corporate.in</li>\n</ul>\n</html>");
+        labelPayerEmail.setToolTipText("<html>The email address where your booking and<br>\nreceipt will be sent. Examples of valid emails:\n<ul>\n<li>user@domain.com</li>\n<li>user@domain.co.in</li>\n<li>user.name@domain.com</li>\n<li>user_name@domain.corporate.in</li>\n</ul>\n</html>");
 
         labelPayerAddress.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         labelPayerAddress.setText("Street address");
@@ -2236,7 +2235,7 @@ public class MainFrame extends javax.swing.JFrame {
         textPayerSurname.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
 
         textPayerEmail.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
-        textPayerEmail.setToolTipText("<html>The email address where your booking and receipt will be sent. Examples of valid emails:\n<ul>\n<li>user@domain.com</li>\n<li>user@domain.co.in</li>\n<li>user.name@domain.com</li>\n<li>user_name@domain.corporate.in</li>\n</ul>\n</html>");
+        textPayerEmail.setToolTipText("<html>The email address where your booking and<br>\nreceipt will be sent. Examples of valid emails:\n<ul>\n<li>user@domain.com</li>\n<li>user@domain.co.in</li>\n<li>user.name@domain.com</li>\n<li>user_name@domain.corporate.in</li>\n</ul>\n</html>");
 
         textPayerAddress.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
 
@@ -2325,7 +2324,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         labelCardNumber.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         labelCardNumber.setText("Card number");
-        labelCardNumber.setToolTipText("<html>The card number is the 16 digit number at the front of your debit/credit card. Card number allowed formats:\n<ul>\n<li>1234123412341234</li>\n<li>1234-1234-1234-1234</li>\n<li>1234 1234 1234 1234</li>\n</ul>\n</html>");
+        labelCardNumber.setToolTipText("<html>\nThe card number is the 16 digit number at the<br>\nfront of your debit/credit card. Card number<br> \nallowed formats:\n<ul>\n<li>1234123412341234</li>\n<li>1234-1234-1234-1234</li>\n<li>1234 1234 1234 1234</li>\n</ul>\n</html>");
 
         labelCardExpiration.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         labelCardExpiration.setText("Expiration date");
@@ -2337,7 +2336,7 @@ public class MainFrame extends javax.swing.JFrame {
         textCardOwnerName.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
 
         textCardNumber.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
-        textCardNumber.setToolTipText("<html>The card number is the 16 digit number at the front of your debit/credit card. Card number allowed formats:\n<ul>\n<li>1234123412341234</li>\n<li>1234-1234-1234-1234</li>\n<li>1234 1234 1234 1234</li>\n</ul>\n</html>");
+        textCardNumber.setToolTipText("<html>\nThe card number is the 16 digit number at the<br>\nfront of your debit/credit card. Card number<br> \nallowed formats:\n<ul>\n<li>1234123412341234</li>\n<li>1234-1234-1234-1234</li>\n<li>1234 1234 1234 1234</li>\n</ul>\n</html>");
 
         cboxExpirationMonth.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         cboxExpirationMonth.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }));

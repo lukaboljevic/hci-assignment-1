@@ -21,6 +21,7 @@ public class App {
         com.formdev.flatlaf.FlatLightLaf.setup(); // setup FlatLaf Light theme to be used by MainFrame
         UIManager.put("OptionPane.messageFont", FONT); // set message font for all JOptionPanes
         UIManager.put("OptionPane.buttonFont", FONT); // set button font for all JOptionPanes
+        UIManager.put("ToolTip.font", FONT); // set tool tip font
 //        UIManager.put("OptionPane.background", new ColorUIResource(BACKGROUND_COLOR)); // set background color for all JOptionPanes
 //        UIManager.put("Panel.background", Color.red);
         MainFrame.main(args);

@@ -245,10 +245,10 @@ public class PassengerInfo extends javax.swing.JPanel {
 
         labelPassport.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         labelPassport.setText("Passport");
-        labelPassport.setToolTipText("Passport number format: P12345678");
+        labelPassport.setToolTipText("<html>Passport number allowed format:\n<ul><li>P12345678</li><ul></html>");
 
         textPassport.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
-        textPassport.setToolTipText("Passport number format: P12345678");
+        textPassport.setToolTipText("<html>Passport number allowed format:\n<ul><li>P12345678</li><ul></html>");
 
         labelMeal.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         labelMeal.setText("Meal");
