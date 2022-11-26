@@ -14,11 +14,15 @@ public class App {
     
     public static final Font FONT = new Font("Lucida Sans", Font.PLAIN, 15);
     public static final Color BUTTON_CLICKED_ON_COLOR = new Color(230, 230, 230);
+    public static final Color BACKGROUND_COLOR = new Color(250, 250, 250);
 
+    
     public static void main(String[] args) {
         com.formdev.flatlaf.FlatLightLaf.setup(); // setup FlatLaf Light theme to be used by MainFrame
-        UIManager.put("OptionPane.messageFont", FONT); // set JOptionPane message font
-        UIManager.put("OptionPane.buttonFont", FONT); // set JOptionPane button font
+        UIManager.put("OptionPane.messageFont", FONT); // set message font for all JOptionPanes
+        UIManager.put("OptionPane.buttonFont", FONT); // set button font for all JOptionPanes
+//        UIManager.put("OptionPane.background", new ColorUIResource(BACKGROUND_COLOR)); // set background color for all JOptionPanes
+//        UIManager.put("Panel.background", Color.red);
         MainFrame.main(args);
     }
 }

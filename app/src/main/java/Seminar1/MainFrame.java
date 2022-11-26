@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -127,6 +128,7 @@ public class MainFrame extends javax.swing.JFrame {
         // We'll be using a scroll pane because we don't want the option pane to have too big a height
         JScrollPane pane = new JScrollPane(ep);
         pane.setPreferredSize(new Dimension(400, 430));
+        pane.setBorder(null);
         
         int proceed = Utils.showConfirmationMessage(this, pane, "Confirm booking", false);
         return !(proceed == JOptionPane.CANCEL_OPTION || proceed == JOptionPane.NO_OPTION
@@ -362,6 +364,7 @@ public class MainFrame extends javax.swing.JFrame {
             JPanel p = new JPanel();
             p.setName(String.valueOf(i));
             p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+//            p.setBackground(App.BACKGROUND_COLOR);
             
             if (numPsg >= 2){
                 // we can add two objects
@@ -992,6 +995,11 @@ public class MainFrame extends javax.swing.JFrame {
          * Do some additional initializations.
          */
         
+        // https://stackoverflow.com/a/70097948
+//        JFrame.setDefaultLookAndFeelDecorated(true);
+//        this.getRootPane().putClientProperty("JRootPane.titleBarBackground", App.BACKGROUND_COLOR);
+//        this.getContentPane().setBackground(App.BACKGROUND_COLOR);
+        
         // Insert empty selection into combo boxes
         this.cboxFrom.insertItemAt("", 0);
         this.cboxTo.insertItemAt("", 0);
@@ -1156,6 +1164,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(" Book a flight");
+        setBackground(new java.awt.Color(250, 250, 250));
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(120, 50));
         setName("frame"); // NOI18N
@@ -1179,6 +1188,7 @@ public class MainFrame extends javax.swing.JFrame {
         basePanelMain.setPreferredSize(new java.awt.Dimension(670, 545));
 
         mainPanelButtons.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Trip", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Sans", 0, 18))); // NOI18N
+        mainPanelButtons.setForeground(new java.awt.Color(40, 96, 241));
         mainPanelButtons.setPreferredSize(new java.awt.Dimension(670, 70));
 
         groupFlightType.add(radioOneWayFlight);
@@ -2256,17 +2266,15 @@ public class MainFrame extends javax.swing.JFrame {
                             .addComponent(labelPayerName)
                             .addComponent(labelPayerEmail)
                             .addComponent(labelPayerCity))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPayerDetailsContainerLayout.createSequentialGroup()
-                        .addGroup(panelPayerDetailsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(panelPayerDetailsContainerLayout.createSequentialGroup()
-                                .addComponent(labelCopyFrom)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cboxCopyFrom, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(textPayerCity, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textPayerEmail, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textPayerName))
-                        .addGap(18, 18, 18)))
+                        .addComponent(labelCopyFrom)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboxCopyFrom, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(textPayerCity)
+                    .addComponent(textPayerEmail)
+                    .addComponent(textPayerName, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
                 .addGroup(panelPayerDetailsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(textPayerAddress, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
                     .addComponent(labelPayerAddress)
@@ -2426,6 +2434,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttonsPanel.setLayout(new javax.swing.BoxLayout(buttonsPanel, javax.swing.BoxLayout.X_AXIS));
         buttonsPanel.add(filler1);
 
+        buttonBack.setBackground(new java.awt.Color(103, 218, 255));
         buttonBack.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         buttonBack.setText("Back");
         buttonBack.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -2438,6 +2447,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttonsPanel.add(buttonBack);
         buttonsPanel.add(filler4);
 
+        buttonClear.setBackground(new java.awt.Color(103, 218, 255));
         buttonClear.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         buttonClear.setText("Clear");
         buttonClear.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -2450,6 +2460,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttonsPanel.add(buttonClear);
         buttonsPanel.add(filler5);
 
+        buttonForward.setBackground(new java.awt.Color(103, 218, 255));
         buttonForward.setFont(new java.awt.Font("Lucida Sans", 0, 15)); // NOI18N
         buttonForward.setText("Search");
         buttonForward.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
