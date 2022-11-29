@@ -29,8 +29,14 @@ public class ActionPerformedSeatButton implements ActionListener {
             initialized = true;
         }
     }
+	
+	public static void restartSeats(){
+        seatTaken.clear();
+        initialize();
+        initialized = true; // just in case
+    }
     
-    private void initialize(){
+    private static void initialize(){
         /**
          * Initialize the hash map.
          */

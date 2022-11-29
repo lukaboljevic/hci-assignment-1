@@ -941,6 +941,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         // Clear seat selections
         this.clearSeatSelections();
+		ActionPerformedSeatButton.restartSeats();
         
         
         // Reset PassengerSeat objects
